@@ -2,28 +2,35 @@
 import string
 import random
 
+import unittest
+
 SYMBOLS = list('!"#$%&\'()*+,-./:;?@[]^_`{|}~')
 
-
 def generate_password():
-    pass_len = (random.randint(8, 16))
+    pass_len = random.randint(8, 16)
     password = [' '] * pass_len
     while ' ' in password:
-        empty_spaces = [x for x in range(len(password)) if password[x] == ' ']
+        empty_spaces = gen_empty_spaces(password)
         if len(empty_spaces) > 0:
             password[random.choice(empty_spaces)] = string.ascii_lowercase[random.randint(0,len(string.ascii_lowercase))-1]
         
-        if len(empty_spaces) > 1:
+        empty_spaces = gen_empty_spaces(password)
+        if len(empty_spaces) > 0:
             password[random.choice(empty_spaces)] = string.ascii_uppercase[random.randint(0,len(string.ascii_uppercase))-1]
         
-        if len(empty_spaces) > 2:
+        empty_spaces = gen_empty_spaces(password)
+        if len(empty_spaces) > 0:
             password[random.choice(empty_spaces)] = string.digits[random.randint(0,len(string.digits))-1]
         
-        if len(empty_spaces) > 3:
+        empty_spaces = gen_empty_spaces(password)
+        if len(empty_spaces) > 0:
             password[random.choice(empty_spaces)] = random.choice(SYMBOLS)
     
-    password_str = ''.join(x for x in password)
+    password_str = ''.join(password)
     return password_str
+
+def gen_empty_spaces(password):
+    return [x for x in range(len(password)) if password[x] == ' ']
 
 def validate(password):
 
@@ -67,4 +74,10 @@ def run():
 
 
 if __name__ == '__main__':
+    class passTest(unittest.TestCase):
+        def test_secure_pass(self):
+            for i in range(1000):
+                self.assertEqual(True, validate(generate_password()))
+
+    #unittest.main()
     run()
